@@ -9,9 +9,7 @@ pipeline {
         githubPush()
     }
 
-    environment {
-        ARTIFACTORY_URL = "http://TU-IP:8082/artifactory/libs-release-local"
-    }
+    
 
     stages {
 
