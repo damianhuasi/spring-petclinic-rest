@@ -33,7 +33,7 @@ pipeline {
                 }
             }
         }
-        stage('Package') {A
+        stage('Package') {
             steps {
                 sh 'mvn package -DskipTests -B -ntp'
             }
