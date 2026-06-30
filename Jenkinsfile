@@ -7,12 +7,7 @@ pipeline {
         // cron('* * * * *')
         githubPush()
     }
-    stages {
-        // stage('Checkout SCM') {
-        //     steps {
-        //         git branch: 'master', url: 'https://github.com/devops-instructor/spring-petclinic-rest.git'
-        //     }
-        // }
+    stages { 
         stage('Compile') {
             steps {
                 sh 'mvn clean compile -B -ntp'
@@ -20,13 +15,11 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh 'mvn test -B -ntp'
-                // sh 'mvn test -Dmaven.test.failure.ignore=true -B -ntp'
+                sh 'mvn test -B -ntp' 
             }
             post { 
                 success {
-                    junit 'target/surefire-reports/*.xml'
-                    // junit skipMarkingBuildUnstable: true, testResults: 'target/surefire-reports/*.xml'
+                    junit 'target/surefire-reports/*.xml' 
                 }
             }
         }
