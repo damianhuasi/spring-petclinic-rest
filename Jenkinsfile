@@ -1,5 +1,11 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            //image 'maven:3.9.15-eclipse-temurin-21'
+             image 'maven:3.8.8-eclipse-temurin-21'
+             //image 'maven:3.9.16-amazoncorretto-21'
+        }
+    }    
     tools {
         maven 'maven3.9.16'
     }
@@ -29,7 +35,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Package') {
             steps {
                 sh 'mvn package -DskipTests -B -ntp'
@@ -44,6 +50,43 @@ pipeline {
                 }
             }
         }
+
+        stage('Artifactory') {
+            steps {
+                
+                withCredentials([file(credentialsId: 'artifactory-settings', variable: 'M2_SETTINGS')]) {
+                    sh 'env | sort'
+                    sh 'mvn clean package -B -DskipTests -s ${M2_SETTINGS}'
+                }                
+
+                script{
+                    def releaseRepo = 'spring-petclinic-rest-release'
+                    def snapshotRepo = 'spring-petclinic-rest-snapshot'
+                    
+                    def server = Artifactory.server 'artifactory'
+                    
+                    def pom = readMavenPom file: 'pom.xml'
+                    println pom.groupId
+
+                    def groupIdPath = pom.groupId.replaceAll("\\.", "/")
+                    println groupIdPath
+
+                    def uploadSpec = """
+                        {
+                            "files": [
+                                {
+                                    "pattern": "target/.*.jar",
+                                    "target": "${releaseRepo}/${groupIdPath}/${pom.artifactId}/${pom.version}/",
+                                    "regexp": "true",
+                                    "props": "build.url=${RUN_DISPLAY_URL};build.user=${USER}"
+                                }
+                            ]
+                        }
+                    """
+                    server.upload spec: uploadSpec
+                }
+            }
+        }  
     }
     post { 
         success {
