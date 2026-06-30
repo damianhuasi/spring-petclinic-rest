@@ -1,8 +1,8 @@
 pipeline {
     agent {
         docker {
-            //image 'maven:3.9.15-eclipse-temurin-21'
-             image 'maven:3.8.8-eclipse-temurin-21'
+            image 'maven:3.9.16-eclipse-temurin-21'
+             //image 'maven:3.8.8-eclipse-temurin-21'
              //image 'maven:3.9.16-amazoncorretto-21'
         }
     }    
