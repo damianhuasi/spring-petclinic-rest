@@ -7,37 +7,28 @@ pipeline {
         // cron('* * * * *')
         githubPush()
     }
+
+    environment {
+        MAVEN_OPTS = "-Dmaven.repo.local=${WORKSPACE}/.m2"
+        SONAR_USER_HOME = "${WORKSPACE}/.sonar"
+    }
+
     stages { 
-        stage('Compile') {
+        stage('Build') {
             steps {
                 sh 'mvn clean compile -B -ntp'
             }
         }
-        stage('Test') {
+        stage('Testing (JUnit + JaCoCo)') {
             steps {
-                sh 'mvn test -B -ntp' 
+                sh 'mvn test jacoco:report -B -ntp'
             }
             post { 
                 success {
                     junit 'target/surefire-reports/*.xml' 
                 }
             }
-        }
-        stage('Coverage') {
-            steps {
-                sh 'mvn jacoco:report -B -ntp'
-            }
-            post { 
-                success {
-                    recordCoverage(tools: [[parser: 'JACOCO']])
-                }
-            }
-        }
-        stage('Package') {
-            steps {
-                sh 'mvn package -DskipTests -B -ntp'
-            }
-        }
+        }  
         stage('Sonarqube') {
             steps {
                 withSonarQubeEnv('sonarqube') {
