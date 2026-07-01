@@ -1,8 +1,6 @@
 pipeline {
     agent {
-        docker {
-            //image 'maven:3.9.15-eclipse-temurin-21'
-             //image 'maven:3.8.8-eclipse-temurin-21'
+        docker { 
              image 'maven:3.9.16-amazoncorretto-21'
         }
     }    
@@ -45,15 +43,7 @@ pipeline {
                     sh 'mvn sonar:sonar -B -ntp'
                 }
             }
-        }
-        
-        // stage("Quality Gate"){
-        //     steps{
-        //         timeout(time: 5, unit: 'MINUTES') {
-        //             waitForQualityGate abortPipeline: true
-        //         }
-        //     }
-        // }
+        } 
 
         stage('Package') {
             steps {
@@ -62,28 +52,7 @@ pipeline {
         }       
              
         stage('Artifactory') {
-            steps {
-                // script {
-
-                //     sh 'env | sort'
-                //     sh 'mvn --version'
-                //     env.MAVEN_HOME = '/usr/share/maven'
-
-                //     def releases = 'spring-petclinic-rest-release'
-                //     def snapshots = 'spring-petclinic-rest-snapshot'
-
-                //     def server = Artifactory.server 'artifactory'
-
-                //     def rtMaven = Artifactory.newMavenBuild()
-                //     rtMaven.deployer server: server, releaseRepo: releases, snapshotRepo: snapshots
-
-                //     rtMaven.deployer
-                //         .addProperty('build.url', env.RUN_DISPLAY_URL)
-                //         .addProperty('build.user', env.USER)
-
-                //     def buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install -B -ntp -DskipTests'
-                //     server.publishBuildInfo buildInfo                    
-                // }
+            steps { 
         
                 withCredentials([file(credentialsId: 'artifactory-settings', variable: 'M2_SETTINGS')]) {
                     sh 'env | sort'
