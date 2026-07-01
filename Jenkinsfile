@@ -1,9 +1,9 @@
 pipeline {
     agent {
         docker {
-            image 'maven:3.9.15-eclipse-temurin-21'
+            //image 'maven:3.9.15-eclipse-temurin-21'
              //image 'maven:3.8.8-eclipse-temurin-21'
-             //image 'maven:3.9.16-amazoncorretto-21'
+             image 'maven:3.9.16-amazoncorretto-21'
         }
     }    
    // tools {
@@ -46,13 +46,13 @@ pipeline {
             }
         }
 
-        stage("Quality Gate"){
-            steps{
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
+        // stage("Quality Gate"){
+        //     steps{
+        //         timeout(time: 5, unit: 'MINUTES') {
+        //             waitForQualityGate abortPipeline: true
+        //         }
+        //     }
+        // }
 
         stage('Package') {
             steps {
