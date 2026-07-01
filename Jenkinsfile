@@ -6,7 +6,7 @@ pipeline {
              image 'maven:3.9.16-amazoncorretto-21'
         }
     }    
-    //Se usa el de contenedor Docker con Maven preinstalado.
+    //Se usa el de contenedor Docker 
     // tools {
     //     maven 'maven3.9.16'
     // }
